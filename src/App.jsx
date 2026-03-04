@@ -79,7 +79,13 @@ function saveProgress(courseId, progress) {
 
 function normalizeTasks(tasks, progressById) {
   return (tasks || []).map((t) => {
-    const id = t?.id || t?.code || t?.title || crypto?.randomUUID?.() || String(Math.random());
+    const id =
+      t?.id ||
+      t?.code ||
+      t?.title ||
+      crypto?.randomUUID?.() ||
+      String(Math.random());
+
     const statusRaw = progressById?.[id]?.status;
     const status = isValidStatus(statusRaw) ? statusRaw : "not_started";
 
@@ -165,6 +171,11 @@ export default function App() {
     const next = pickNextActionableTask(normalizedTasks);
     const nextDueHours = next?.dueDate ? hoursUntil(next.dueDate) : null;
 
+    // --- Agents (Organizer -> Planner -> Coach)
+    const organized = OrganizerAgent(next);
+    const planned = PlannerAgent({ task: next });
+    const coached = CoachAgent({ task: next, organized, planned });
+
     const completedCount = normalizedTasks.filter((t) => t.status === "complete").length;
 
     return {
@@ -176,6 +187,11 @@ export default function App() {
       normalizedTasks,
       next,
       nextDueHours,
+
+      // Agents
+      organized,
+      planned,
+      coached,
     };
   }, [progressById]);
 
@@ -223,9 +239,7 @@ export default function App() {
         </div>
         <div>
           <b>Tasks:</b> {summary.taskCount}{" "}
-          <span style={{ opacity: 0.7 }}>
-            ({summary.completedCount} complete)
-          </span>
+          <span style={{ opacity: 0.7 }}>({summary.completedCount} complete)</span>
         </div>
         <div>
           <b>Current Academic Week:</b> {summary.currentWeek ?? "—"}
@@ -288,9 +302,9 @@ export default function App() {
               <div style={{ marginTop: 10 }}>
                 <b>Resources:</b>
                 <ul>
-                  {summary.next.resources.map((r) => (
-                    <li key={r} style={{ wordBreak: "break-word" }}>
-                      {r}
+                  {summary.next.resources.map((r, idx) => (
+                    <li key={`${idx}-${String(r)}`} style={{ wordBreak: "break-word" }}>
+                      {typeof r === "string" ? r : JSON.stringify(r)}
                     </li>
                   ))}
                 </ul>
@@ -298,6 +312,62 @@ export default function App() {
                   Note: browser apps can’t open arbitrary local file paths directly.
                   For now we store paths as references.
                 </p>
+              </div>
+            )}
+
+            {/* Agents output */}
+            {summary.planned && summary.coached && (
+              <div style={{ marginTop: 14 }}>
+                <div style={{ paddingTop: 10, borderTop: "1px solid #eee" }}>
+                  <h3 style={{ margin: "0 0 8px" }}>Autopilot</h3>
+                  <div>
+                    <b>{summary.planned.autopilot.mode}</b> —{" "}
+                    {summary.planned.autopilot.reason}
+                    <span style={{ opacity: 0.7 }}>
+                      {" "}
+                      (Timebox: {summary.planned.timeboxMin} min)
+                    </span>
+                  </div>
+
+                  <h3 style={{ margin: "12px 0 8px" }}>Smallest Next Action</h3>
+                  <div>{summary.coached.sna}</div>
+
+                  <h3 style={{ margin: "12px 0 8px" }}>Plan</h3>
+                  <ul style={{ marginTop: 6 }}>
+                    {summary.planned.plan.map((p, i) => (
+                      <li key={i}>
+                        {p.step} ({p.estMin} min)
+                      </li>
+                    ))}
+                  </ul>
+
+                  <h3 style={{ margin: "12px 0 8px" }}>Coach</h3>
+                  <ul style={{ marginTop: 6 }}>
+                    {summary.coached.teach.map((t, i) => (
+                      <li key={i}>{t}</li>
+                    ))}
+                  </ul>
+
+                  {summary.coached.draft && (
+                    <>
+                      <h3 style={{ margin: "12px 0 8px" }}>Draft scaffold</h3>
+                      <pre style={{ whiteSpace: "pre-wrap", marginTop: 6 }}>
+                        {summary.coached.draft}
+                      </pre>
+                    </>
+                  )}
+
+                  {summary.coached.questions?.length > 0 && (
+                    <>
+                      <h3 style={{ margin: "12px 0 8px" }}>Blocked on</h3>
+                      <ul style={{ marginTop: 6 }}>
+                        {summary.coached.questions.map((q, i) => (
+                          <li key={i}>{q}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
               </div>
             )}
           </>
