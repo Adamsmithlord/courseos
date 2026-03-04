@@ -1,0 +1,23 @@
+{
+  "course": {
+    "id": "SIT182",
+    "name": "SIT182 - Real World Practices for Cyber Security",
+    "startDate": "2026-03-01"
+  },
+  "weeks": [
+    { "week": 1, "title": "Admin Matters & Understanding Cybersecurity" },
+    { "week": 2, "title": "Malware" },
+    { "week": 3, "title": "Access Control" }
+  ],
+  "tasks": [
+    {
+      "id": "SIT182-1.1P",
+      "code": "1.1P",
+      "title": "Task 1.1P",
+      "dueAt": "2026-03-10T23:59:00",
+      "resources": [
+        "./SIT182/ontrack_index/Task_Sheet and Resources/SIT182-1.1P (1).pdf"
+      ]
+    }
+  ]
+}

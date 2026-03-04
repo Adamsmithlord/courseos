@@ -1,0 +1,39 @@
+{
+  "name": "courseos",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+
+    "snapshot:studypro": "node tools/snapshot-studypro.mjs",
+    "snapshot:courseos": "node tools/snapshot-courseos.mjs",
+    "snapshot:ai": "node tools/snapshot-ai.mjs",
+
+    "snapshot:all": "npm run snapshot:studypro && npm run snapshot:courseos && npm run snapshot:ai",
+
+    "snapshot:watch": "chokidar \"src/**/*\" \"tools/**/*\" \"package.json\" \"C:\\\\Users\\\\Josh\\\\Desktop\\\\StudyPRO\\\\SIT182 - Real World Practices For Cyber Security\\\\**\\\\*\" --ignore \"src/data/*snapshot.json\" --debounce 500 -c \"npm run snapshot:all\""
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "autoprefixer": "^10.4.27",
+    "chokidar-cli": "^3.0.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.1",
+    "vite": "^7.3.1"
+  }
+}
