@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import coursepack from "./data/coursepack.sit182.json";
+import { OrganizerAgent, PlannerAgent, CoachAgent } from "./engines";
 
 // --------------------
 // Helpers
