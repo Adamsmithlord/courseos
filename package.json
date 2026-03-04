@@ -15,9 +15,9 @@
 
     "snapshot:all": "npm run snapshot:studypro && npm run snapshot:courseos && npm run snapshot:ai",
 
-    "snapshot:watch": "chokidar \"src/**/*\" \"tools/**/*\" \"package.json\" \"C:\\\\Users\\\\Josh\\\\Desktop\\\\StudyPRO\\\\SIT182 - Real World Practices For Cyber Security\\\\**\\\\*\" --ignore \"src/data/*snapshot.json\" --debounce 500 -c \"npm run snapshot:all\"",
+    "snapshot:watch": "chokidar \"src/**/*\" \"tools/**/*\" \"package.json\" \"C:\\\\Users\\\\Josh\\\\Desktop\\\\StudyPRO\\\\SIT182 - Real World Practices For Cyber Security\\\\**\\\\*\" --ignore \"src/data/*snapshot.json\" --debounce 500 -c \"npm run snapshot:all && npm run sync:github\"",
 
-    "sync:github": "git add . && git commit -m \"auto snapshot\" && git push"
+    "sync:github": "git add . && git diff --cached --quiet || (git commit -m \"auto snapshot\" && git push)"
   },
   "dependencies": {
     "react": "^19.2.0",
